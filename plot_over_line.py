@@ -60,26 +60,39 @@ class PointCloud:
         return self._points.index(self.get_nearest(p))
 
 
+class Line:
+    def __init__(self, start: Point, end: Point) -> Noun:
+        self._start = start
+        self._end = start
+        self._vector = (end.x - start.x, end.y - start.y)
+
+    def start(self) -> Point:
+        return self._start
+
+    def end(self) -> Point:
+        return self._end
+
+    def at(self, fraction: float) -> Point:
+        assert fraction >= 0 and fraction <= 1
+        return Point(
+            self._start.x + fraction * self._vector[0],
+            self._start.y + fraction * self._vector[1],
+        )
+
+
 def plot_over_line(
     point_cloud: PointCloud,
     point_values: List[float],
-    p0: Point,
-    p1: Point,
+    line: Line,
     n: int = 1000,
 ) -> None:
     assert point_cloud.size == len(point_values)
 
-    # First, let us discretize the line into `n` points
-    dx = (p1.x - p0.x) / (n - 1)
-    dy = (p1.y - p0.y) / (n - 1)
-    points_on_line = [
-        Point(p0.x + dx * float(i), p0.y + dy * float(i)) for i in range(n)
-    ]
-
     x = []
     y = []
+    p0 = line.start()
     for i in range(n):
-        current = points_on_line[i]
+        current = line.at(float(i) / n)
         x.append(p0.distance_to(current))
         y.append(point_values[point_cloud.get_nearest_point_index(current)])
 
@@ -116,4 +129,5 @@ if __name__ == "__main__":
 
     point_values = [_test_function(p) for p in point_cloud]
 
-    plot_over_line(point_cloud, point_values, Point(0.0, 0.0), Point(1.0, 1.0), n=2000)
+    line = Line(Point(0.0, 0.0), Point(1.0, 1.0))
+    plot_over_line(point_cloud, point_values, line, n=2000)
