@@ -30,28 +30,22 @@ class RasterGrid:
         _ix: int
         _iy: int
 
-    def __init__(self,
-                 x0: float,
-                 y0: float,
-                 x1: float,
-                 y1: float,
-                 nx: int,
-                 ny: int) -> None:
+    def __init__(
+        self, x0: float, y0: float, x1: float, y1: float, nx: int, ny: int
+    ) -> None:
         self._x0 = x0
         self._y0 = y0
         self._x1 = x1
         self._y1 = y1
         self._nx = nx
         self._ny = ny
-        self.nc = nx*ny
-        self.cells = [
-            self.Cell(i, j) for i in range(nx) for j in range(ny)
-        ]
+        self.nc = nx * ny
+        self.cells = [self.Cell(i, j) for i in range(nx) for j in range(ny)]
 
     def c(self, cell: Cell) -> Tuple[float, float]:
         return (
-            self._x0 + (float(cell._ix) + 0.5)*(self._x1 - self._x0)/self._nx,
-            self._y0 + (float(cell._iy) + 0.5)*(self._y1 - self._y0)/self._ny
+            self._x0 + (float(cell._ix) + 0.5) * (self._x1 - self._x0) / self._nx,
+            self._y0 + (float(cell._iy) + 0.5) * (self._y1 - self._y0) / self._ny,
         )
 
 
@@ -68,16 +62,13 @@ def test_number_of_cells():
 
 def test_cell_center():
     grid = RasterGrid(0.0, 0.0, 2.0, 2.0, 2, 2)
-    expected_centers = [
-        (0.5, 0.5),
-        (1.5, 0.5),
-        (0.5, 1.5),
-        (1.5, 1.5)
-    ]
+    expected_centers = [(0.5, 0.5), (1.5, 0.5), (0.5, 1.5), (1.5, 1.5)]
 
     for cell in grid.cells:
         for center in expected_centers:
-            if isclose(grid.c(cell)[0], center[0]) and isclose(grid.c(cell)[1], center[1]):
+            if isclose(grid.c(cell)[0], center[0]) and isclose(
+                grid.c(cell)[1], center[1]
+            ):
                 expected_centers.remove(center)
 
     assert len(expected_centers) == 0

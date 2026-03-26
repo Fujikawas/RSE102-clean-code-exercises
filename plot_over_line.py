@@ -29,7 +29,7 @@ class Point:
     def distance_to(self, other: Point) -> float:
         dx = other.x - self.x
         dy = other.y - self.y
-        return sqrt(dx*dx + dy*dy)
+        return sqrt(dx * dx + dy * dy)
 
 
 class PointCloud:
@@ -60,17 +60,21 @@ class PointCloud:
         return self._points.index(self.get_nearest(p))
 
 
-def plot_over_line(point_cloud: PointCloud,
-                   point_values: List[float],
-                   p0: Point,
-                   p1: Point,
-                   n: int = 1000) -> None:
+def plot_over_line(
+    point_cloud: PointCloud,
+    point_values: List[float],
+    p0: Point,
+    p1: Point,
+    n: int = 1000,
+) -> None:
     assert point_cloud.size == len(point_values)
 
     # First, let us discretize the line into `n` points
-    dx = (p1.x - p0.x)/(n - 1)
-    dy = (p1.y - p0.y)/(n - 1)
-    points_on_line = [Point(p0.x + dx*float(i), p0.y + dy*float(i)) for i in range(n)]
+    dx = (p1.x - p0.x) / (n - 1)
+    dy = (p1.y - p0.y) / (n - 1)
+    points_on_line = [
+        Point(p0.x + dx * float(i), p0.y + dy * float(i)) for i in range(n)
+    ]
 
     x = []
     y = []
@@ -85,7 +89,7 @@ def plot_over_line(point_cloud: PointCloud,
 
 
 def _test_function(position: Point) -> float:
-    return sin(2.0*pi*position.x)*cos(2.0*pi*position.y)
+    return sin(2.0 * pi * position.x) * cos(2.0 * pi * position.y)
 
 
 if __name__ == "__main__":
@@ -98,22 +102,18 @@ if __name__ == "__main__":
     domain_size = (1.0, 1.0)
     number_of_points = (50, 50)
     dx = (
-        domain_size[0]/float(number_of_points[0]),
-        domain_size[1]/float(number_of_points[1])
+        domain_size[0] / float(number_of_points[0]),
+        domain_size[1] / float(number_of_points[1]),
     )
 
-    point_cloud = PointCloud([
-        Point(float(i)*dx[0], float(j)*dx[1])
-        for i in range(number_of_points[0])
-        for j in range(number_of_points[1])
-    ])
+    point_cloud = PointCloud(
+        [
+            Point(float(i) * dx[0], float(j) * dx[1])
+            for i in range(number_of_points[0])
+            for j in range(number_of_points[1])
+        ]
+    )
 
     point_values = [_test_function(p) for p in point_cloud]
 
-    plot_over_line(
-        point_cloud,
-        point_values,
-        Point(0.0, 0.0),
-        Point(1.0, 1.0),
-        n=2000
-    )
+    plot_over_line(point_cloud, point_values, Point(0.0, 0.0), Point(1.0, 1.0), n=2000)
