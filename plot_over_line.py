@@ -80,12 +80,12 @@ class Line:
         )
 
 
-def plot_over_line(
+def generate_discrete_values(
     point_cloud: PointCloud,
     point_values: List[float],
     line: Line,
     n: int = 1000,
-) -> None:
+) -> Tuple(List(float), List(float)):
     assert point_cloud.size == len(point_values)
 
     x = []
@@ -95,6 +95,11 @@ def plot_over_line(
         current = line.at(float(i) / n)
         x.append(p0.distance_to(current))
         y.append(point_values[point_cloud.get_nearest_point_index(current)])
+    return [x, y]
+
+
+def plot_over_line(x: List(float), y: List(float)) -> None:
+    assert len(x) == len(y)
 
     plot(x, y)
     show()
@@ -130,4 +135,5 @@ if __name__ == "__main__":
     point_values = [_test_function(p) for p in point_cloud]
 
     line = Line(Point(0.0, 0.0), Point(1.0, 1.0))
-    plot_over_line(point_cloud, point_values, line, n=2000)
+    discrete_values = generate_discrete_values(point_cloud, point_values, line, n=2000)
+    plot_over_line(discrete_values[0], discrete_values[1])
