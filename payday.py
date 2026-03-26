@@ -9,28 +9,45 @@ from typing import Iterable
 @dataclass
 class Debtor:
     """Stores the information on a person owing us money"""
+
     name: str
     debt: float
 
 
 def payday(debtors: Iterable[Debtor]) -> None:
-    # First, we sort the debtors according to their debt
-    # such that those with the highest debt are printed first
-    ordered = reversed(sorted(debtors, key=lambda debtor: debtor.debt))
+    ordered = _sort_debtors(debtors)
+    _print_debtors(ordered)
 
-    # Then we print the debtors, highlighting debts above 100 by exclamation marks
-    for debtor in ordered:
+
+# sort the debtors according to their debt amount,higher amount appear earlier
+def _sort_debtors(debtors: Iterable[Debtor]) -> Iterable[Debtor]:
+    ordered = reversed(sorted(debtors, key=lambda debtor: debtor.debt))
+    return ordered
+
+
+def _print_debtors(debtors: Iterable[Debtor]) -> None:
+    for debtor in debtors:
         if debtor.debt > 100.0:
-            print(f"{debtor.name}: !!!{debtor.debt}!!!")
+            _print_debtor_with_exclamation(debtor)
         else:
-            print(f"{debtor.name}: {debtor.debt}")
+            _print_debtor(debtor)
+
+
+def _print_debtor_with_exclamation(debtor: Debtor) -> None:
+    print(f"{debtor.name}: !!!{debtor.debt}!!!")
+
+
+def _print_debtor(debtor: Debtor) -> None:
+    print(f"{debtor.name}: {debtor.debt}")
 
 
 if __name__ == "__main__":
-    payday([
-        Debtor("Person1", 100.0),
-        Debtor("Person2", 200.0),
-        Debtor("Person3", 10.0),
-        Debtor("Person4", 50.0),
-        Debtor("Person5", 1250.0)
-    ])
+    payday(
+        [
+            Debtor("Person1", 100.0),
+            Debtor("Person2", 200.0),
+            Debtor("Person3", 10.0),
+            Debtor("Person4", 50.0),
+            Debtor("Person5", 1250.0),
+        ]
+    )
